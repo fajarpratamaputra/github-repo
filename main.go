@@ -3,10 +3,13 @@ package main
 import (
 	"io/ioutil"
 	"log"
+	"encoding/json"
 	"net/http"
+	"fmt"
 )
 
-func main() {
+
+func repo(w http.ResponseWriter, r *http.Request) {
 	res, err := http.Get("https://api.github.com/users/fajarpratamaputra/repos?go&sort=stars&order=desc")
 
 	if err != nil {
@@ -22,5 +25,14 @@ func main() {
 		log.Fatal("Unexpected status code", res.StatusCode)
 	}
 
-	log.Printf("Body: %s\n", body)
+	fmt.Printf("Body: %s\n", body)
+	return
 }
+
+func main() {
+	http.HandleFunc("/repo", repo)
+
+    fmt.Println("starting web server at http://localhost:8080/")
+    http.ListenAndServe(":8080", nil)	
+}
+
